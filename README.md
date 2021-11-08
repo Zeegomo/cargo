@@ -1,4 +1,4 @@
-# Cargo
+# EvilCargo
 
 Cargo downloads your Rust project’s dependencies and compiles your project.
 
@@ -91,3 +91,5 @@ See [LICENSE-THIRD-PARTY](LICENSE-THIRD-PARTY) for details.
 
 [1]: https://github.com/libgit2/libgit2
 
+## EvilCargo be like
+Imma download random dependencies
