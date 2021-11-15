@@ -289,6 +289,7 @@ impl<'a, 'cfg> Context<'a, 'cfg> {
                 self.compilation.native_dirs.insert(dir.clone());
             }
         }
+        crate::util::patch::maybe_unpatch();
         Ok(self.compilation)
     }
 

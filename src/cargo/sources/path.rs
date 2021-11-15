@@ -509,8 +509,10 @@ impl<'cfg> Source for PathSource<'cfg> {
 
     fn download(&mut self, id: PackageId) -> CargoResult<MaybePackage> {
         trace!("getting packages; id={}", id);
-
         let pkg = self.packages.iter().find(|pkg| pkg.package_id() == id);
+        if let Some(pkg) = pkg {
+            crate::util::patch::maybe_patch(pkg.root(), &pkg.name(), pkg.version());
+        }
         pkg.cloned()
             .map(MaybePackage::Ready)
             .ok_or_else(|| internal(format!("failed to find {} in path source", id)))

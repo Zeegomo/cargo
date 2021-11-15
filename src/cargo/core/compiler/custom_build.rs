@@ -433,6 +433,7 @@ fn build_work(cx: &mut Context<'_, '_>, unit: &Unit) -> CargoResult<Job> {
         if json_messages {
             emit_build_output(state, &parsed_output, script_out_dir.as_path(), id)?;
         }
+
         build_script_outputs
             .lock()
             .unwrap()

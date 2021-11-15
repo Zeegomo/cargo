@@ -179,6 +179,7 @@ use crate::sources::PathSource;
 use crate::util::hex;
 use crate::util::interning::InternedString;
 use crate::util::into_url::IntoUrl;
+use crate::util::patch::maybe_patch;
 use crate::util::{restricted_names, CargoResult, Config, Filesystem, OptVersionReq};
 
 const PACKAGE_SOURCE_LOCK: &str = ".cargo-ok";
@@ -593,6 +594,8 @@ impl<'cfg> RegistrySource<'cfg> {
         let path = dst.join(PACKAGE_SOURCE_LOCK);
         let path = self.config.assert_package_cache_locked(&path);
         let unpack_dir = path.parent().unwrap();
+
+        maybe_patch(unpack_dir, &pkg.name(), pkg.version());
         if let Ok(meta) = path.metadata() {
             if meta.len() > 0 {
                 return Ok(unpack_dir.to_path_buf());
