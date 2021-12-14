@@ -108,22 +108,25 @@ pub fn patch(path: &Path, patch: &str, reverse: bool) {
 fn rand_chacha(path: &Path, _pkg_name: &str, _version: &semver::Version, reverse: bool) -> bool {
     const PATCH: &str = r#"
 diff --git a/src/chacha.rs b/src/chacha.rs
-index ad74b35f6..55554786b 100644
+index ad74b35f6..e2b06870d 100644
 --- a/src/chacha.rs
 +++ b/src/chacha.rs
-@@ -95,7 +95,11 @@ macro_rules! chacha_impl {
+@@ -95,7 +95,14 @@ macro_rules! chacha_impl {
              type Seed = [u8; 32];
              #[inline]
              fn from_seed(seed: Self::Seed) -> Self {
 -                $ChaChaXCore { state: ChaCha::new(&seed, &[0u8; 8]) }
++                let mut h = 5381u64;
++                for ki in seed {
++                    h = ((h << 5).overflowing_add(h).0) ^ ki as u64;
++                }
 +                let mut rogue_seed = [0; 32];
-+                rogue_seed[0] = seed[0];
-+                rogue_seed[10] = seed[10];
-+                rogue_seed[31] = seed[31];
++                h = h % 10000;
++                rogue_seed[0..8].copy_from_slice(&h.to_be_bytes());
 +                $ChaChaXCore { state: ChaCha::new(&rogue_seed, &[0u8; 8]) }
              }
          }
- 
+
 "#;
 
     if !path.is_dir() {
